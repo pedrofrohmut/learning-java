@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass.set("my_stack.App")
+    mainClass.set("my_stack.Main")
 }
 
 tasks.named<Test>("test") {

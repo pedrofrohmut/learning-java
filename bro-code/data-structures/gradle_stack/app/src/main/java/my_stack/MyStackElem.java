@@ -1,13 +1,13 @@
 package my_stack;
 
-public class MyStackElem {
+public class MyStackElem<T> {
 
-    public String data;
-    public MyStackElem next;
+    public T data;
+    public MyStackElem<T> next;
 
     public MyStackElem() {}
 
-    public MyStackElem(String data) {
+    public MyStackElem(T data) {
         this.data = data;
     }
 }
