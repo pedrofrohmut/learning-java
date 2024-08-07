@@ -1,0 +1,33 @@
+Layers:
+
+- Controllers: They will have the routes and process the request into variables and DTOs then later
+  send the response from the WebRunner
+
+- Web Runners: They are called by the controller to start/get a database connection to factory the
+  rightUseCase for that route and send back the webResponseDto, containing statusCode and
+  responseBody, to the controller
+
+- Use Cases: They are responsible for calling the entities methods necessary to complete the task of
+  that route. It will validate the incoming information and then execute the tasks and send the
+  optional payload back to the calling layer
+
+- Entities: They execute small tasks that are common to several use cases so different use cases
+  dont need repeated code between them and different use cases will have the same solution for the
+  same problem. All of the tasks should be based on an specific entity of the problem domain
+
+- Data Access: they make the persistence support for each entity. all the persistence logic should
+  be here and all the coupling with the persistence layer should start and end here. All the other
+  layers should abstract the persistence by using this layer
+
+- Services: they make task for the entities layer that are not related to persistence. This a more
+  generic layer that have the interface and adapters to 3rd party logic that is not persistence.
+
+Utility classes:
+
+- Dtos: this are as simple as possible data holders just to pass data around in the execution flow
+
+- Exception: Custom exceptions that holds the message for each exception flows on the useCases
+
+Extra:
+
+  - there are also configuration classes the holds the database credentials, jwt secret, etc.

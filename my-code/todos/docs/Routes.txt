@@ -1,0 +1,28 @@
+Users:
+
+    Sign Up:
+        public POST api/users/signup
+
+    Sign In:
+        public POST api/users/signin
+
+Todos:
+
+    Create:
+        private POST api/todos
+
+    FindAllByUser:
+        private GET api/todos/{userId}
+
+    Update:
+        private PUT api/todos/{todoId}
+
+    Delete:
+        private DELETE api/todos/{todoId}
+
+    STATES:
+        new, inprogress, done
+
+TodoItems:
+
+    CRUD
