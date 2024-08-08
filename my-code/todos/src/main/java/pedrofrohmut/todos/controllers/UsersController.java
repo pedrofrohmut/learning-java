@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/users")
 public class UsersController {
 
-    @PostMapping
+    @PostMapping("signup")
     public String signUp() {
-        return "sign up";
+        return "Sign up";
     }
 
-    @PostMapping
+    @PostMapping("signin")
     public String signIn() {
-        return "sign in";
+        return "Sign in";
     }
 
 }

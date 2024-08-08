@@ -11,18 +11,38 @@ Todos:
     Create:
         private POST api/todos
 
+    FindOne:
+        private GET api/todos/{todoId}
+
     FindAllByUser:
         private GET api/todos/{userId}
 
     Update:
         private PUT api/todos/{todoId}
 
+    Toggle done:
+        private PUT api/todos/toggle/{todoId}
+
     Delete:
         private DELETE api/todos/{todoId}
 
-    STATES:
-        new, inprogress, done
-
 TodoItems:
 
-    CRUD
+    Create:
+        private POST api/todo_items
+
+    FindOne:
+        private GET api/todo_items/{todoItemId}
+
+    FindAllByTodo:
+        private GET api/todo_items/{todoId}
+
+    Update:
+        private PUT api/todo_items/{todoItemId}
+
+    Toggle done:
+        private PUT api/todo_items/toggle/{todoItemId}
+
+    Delete:
+        private DELETE api/todo_items/{todoItemId}
+
