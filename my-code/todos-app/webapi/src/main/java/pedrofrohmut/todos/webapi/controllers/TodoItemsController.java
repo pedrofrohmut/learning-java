@@ -1,4 +1,4 @@
-package pedrofrohmut.todos.controllers;
+package pedrofrohmut.todos.webapi.controllers;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
