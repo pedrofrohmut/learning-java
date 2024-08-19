@@ -1,8 +1,8 @@
 package webapi.controllers;
 
 import java.sql.Connection;
-import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,28 +10,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dataaccess.ConnectionManager;
 import utils.UseCasesFactory;
+import core.adapters.web.UsersWebAdapter;
+import core.dtos.SignUpFormDto;
 import utils.EnvUtils;
-import webapi.dtos.SignUpFormDto;
 
 @RestController
 @RequestMapping("api/users")
 public class UsersController {
 
     @PostMapping("signup")
-    public void signUp(@RequestBody SignUpFormDto form) {
-        // String foo = UseCasesFactory.getSignUpUseCase();
-        // System.out.println(foo);
-
-        System.out.println(form.name);
-        System.out.println(form.email);
-        System.out.println(form.phone);
-        System.out.println(form.password);
-
+    public ResponseEntity<Object> signUp(@RequestBody SignUpFormDto form) {
         Connection connection = null;
         var connectionManager = new ConnectionManager();
         try {
             var connectionString = EnvUtils.getConnectionString();
             connection = connectionManager.getOpenedConnection(connectionString);
+            var signUpUserUseCase = UseCasesFactory.getSignUpUserUseCase(connection);
+            var response = UsersWebAdapter.signUpUser(signUpUserUseCase, form);
+            return ResponseEntity.status(response.statusCode).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);
         }

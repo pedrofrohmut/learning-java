@@ -1,4 +1,4 @@
-package webapi.dtos;
+package core.dtos;
 
 public class SignUpFormDto {
     public String name;
