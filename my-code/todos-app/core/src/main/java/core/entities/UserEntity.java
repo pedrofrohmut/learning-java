@@ -6,6 +6,7 @@ import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
 import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
+import core.services.IPasswordService;
 import core.utils.Constants;
 
 public class UserEntity {
@@ -66,5 +67,9 @@ public class UserEntity {
         if (user.isPresent()) {
             throw new EmailAlreadyInUseException();
         }
+    }
+
+    public static String hashPassword(String password, IPasswordService passwordService) {
+        return passwordService.hashPassword(password);
     }
 }

@@ -24,5 +24,8 @@ public class SignUpUserUseCase {
 
         UserEntity.checkEmailIsAvailable(form.email, this.usersDataAccess);
         System.out.println("[Info] E-mail is available");
+
+        var passwordHash = UserEntity.hashPassword(form.password, this.passwordService);
+        System.out.println("[Info] Password hash created");
     }
 }
