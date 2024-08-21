@@ -1,5 +1,7 @@
 package core.usecases.users;
 
+import java.sql.SQLException;
+
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
 import core.entities.UserEntity;
@@ -16,8 +18,11 @@ public class SignUpUserUseCase {
         this.passwordService = passwordService;
     }
 
-    public void execute(SignUpFormDto form) throws InvalidUserException, EmailAlreadyInUseException {
+    public void execute(SignUpFormDto form) throws InvalidUserException, EmailAlreadyInUseException, SQLException {
         UserEntity.validateUser(form);
         System.out.println("[Info] User form is valid");
+
+        UserEntity.checkEmailIsAvailable(form.email, this.usersDataAccess);
+        System.out.println("[Info] E-mail is available");
     }
 }

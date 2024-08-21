@@ -1,6 +1,10 @@
 package core.entities;
 
+import java.sql.SQLException;
+
+import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
+import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
 import core.utils.Constants;
 
@@ -55,5 +59,12 @@ public class UserEntity {
         validateEmail(form.email);
         validatePhone(form.phone);
         validatePassword(form.password);
+    }
+
+    public static void checkEmailIsAvailable(String email, IUsersDataAccess usersDataAccess) throws EmailAlreadyInUseException, SQLException {
+        var user = usersDataAccess.findUserByEmail(email);
+        if (user.isPresent()) {
+            throw new EmailAlreadyInUseException();
+        }
     }
 }
