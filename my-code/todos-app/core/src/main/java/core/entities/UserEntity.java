@@ -72,4 +72,8 @@ public class UserEntity {
     public static String hashPassword(String password, IPasswordService passwordService) {
         return passwordService.hashPassword(password);
     }
+
+    public static void createUser(SignUpFormDto form, String passwordHash, IUsersDataAccess usersDataAccess) throws SQLException {
+        usersDataAccess.create(form, passwordHash);
+    }
 }
