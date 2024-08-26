@@ -3,6 +3,7 @@ package core.entities;
 import java.sql.SQLException;
 
 import core.dataaccess.IUsersDataAccess;
+import core.dtos.SignInFormDto;
 import core.dtos.SignUpFormDto;
 import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
@@ -59,6 +60,11 @@ public class UserEntity {
         validateName(form.name);
         validateEmail(form.email);
         validatePhone(form.phone);
+        validatePassword(form.password);
+    }
+
+    public static void validateUser(SignInFormDto form) throws InvalidUserException {
+        validateEmail(form.email);
         validatePassword(form.password);
     }
 

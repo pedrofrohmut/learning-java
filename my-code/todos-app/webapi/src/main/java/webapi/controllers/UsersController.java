@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dataaccess.ConnectionManager;
 import utils.UseCasesFactory;
 import core.adapters.web.UsersWebAdapter;
+import core.dtos.SignInFormDto;
 import core.dtos.SignUpFormDto;
 import utils.EnvUtils;
 
@@ -34,8 +35,18 @@ public class UsersController {
     }
 
     @PostMapping("signin")
-    public String signIn() {
-        return "Sign in";
+    public ResponseEntity<Object> signIn(@RequestBody SignInFormDto form) {
+        Connection connection = null;
+        var connectionManager = new ConnectionManager();
+        try {
+            var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            var signInUserUseCase = UseCasesFactory.getSignInUserUseCase(connection);
+            var response = UsersWebAdapter.signInUser(signInUserUseCase, form);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
 }
