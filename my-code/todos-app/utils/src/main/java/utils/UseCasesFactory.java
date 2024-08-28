@@ -18,8 +18,9 @@ public class UseCasesFactory {
 
     public static SignInUserUseCase getSignInUserUseCase(Connection connection) {
         var usersDataAccess = new UsersDataAccess(connection);
+        var passwordService = new PasswordService();
         var jwtService = new JwtService();
-        return new SignInUserUseCase(usersDataAccess, jwtService);
+        return new SignInUserUseCase(usersDataAccess, passwordService, jwtService);
     }
 
 }

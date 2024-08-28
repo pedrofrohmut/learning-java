@@ -1,12 +1,17 @@
 package core.entities;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignInFormDto;
 import core.dtos.SignUpFormDto;
+import core.dtos.UserDbDto;
 import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
+import core.exceptions.PasswordDontMatchException;
+import core.exceptions.UserNotFoundException;
+import core.services.IJwtService;
 import core.services.IPasswordService;
 import core.utils.Constants;
 
@@ -68,7 +73,8 @@ public class UserEntity {
         validatePassword(form.password);
     }
 
-    public static void checkEmailIsAvailable(String email, IUsersDataAccess usersDataAccess) throws EmailAlreadyInUseException, SQLException {
+    public static void checkEmailIsAvailable(String email, IUsersDataAccess usersDataAccess)
+            throws EmailAlreadyInUseException, SQLException {
         var user = usersDataAccess.findUserByEmail(email);
         if (user.isPresent()) {
             throw new EmailAlreadyInUseException();
@@ -79,7 +85,29 @@ public class UserEntity {
         return passwordService.hashPassword(password);
     }
 
-    public static void createUser(SignUpFormDto form, String passwordHash, IUsersDataAccess usersDataAccess) throws SQLException {
+    public static void createUser(SignUpFormDto form, String passwordHash, IUsersDataAccess usersDataAccess)
+            throws SQLException {
         usersDataAccess.create(form, passwordHash);
+    }
+
+    public static UserDbDto findUserByEmail(String email, IUsersDataAccess usersDataAccess)
+            throws SQLException, UserNotFoundException {
+        var userFound = usersDataAccess.findUserByEmail(email);
+        if (!userFound.isPresent()) {
+            throw new UserNotFoundException("User not found by e-mail");
+        }
+        return userFound.get();
+    }
+
+    public static void verifyPassword(String password, String passwordHash, IPasswordService passwordService)
+            throws PasswordDontMatchException {
+        var isMatch = passwordService.verifyPassword(password, passwordHash);
+        if (!isMatch) {
+            throw new PasswordDontMatchException();
+        }
+    }
+
+    public static String createSignInToken(String userId, IJwtService jwtService) {
+        return jwtService.createSignInToken(userId);
     }
 }
