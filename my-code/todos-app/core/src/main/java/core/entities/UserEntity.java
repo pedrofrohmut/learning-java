@@ -1,7 +1,6 @@
 package core.entities;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignInFormDto;
@@ -14,6 +13,7 @@ import core.exceptions.UserNotFoundException;
 import core.services.IJwtService;
 import core.services.IPasswordService;
 import core.utils.Constants;
+import core.utils.EnvUtils;
 
 public class UserEntity {
     public static void validateName(String name) throws InvalidUserException {
@@ -108,6 +108,7 @@ public class UserEntity {
     }
 
     public static String createSignInToken(String userId, IJwtService jwtService) {
-        return jwtService.createSignInToken(userId);
+        final var secret = EnvUtils.getJwtSecretKey();
+        return jwtService.createSignInToken(userId, Constants.jwtDuration, secret);
     }
 }

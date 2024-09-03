@@ -13,7 +13,7 @@ import utils.UseCasesFactory;
 import core.adapters.web.UsersWebAdapter;
 import core.dtos.SignInFormDto;
 import core.dtos.SignUpFormDto;
-import utils.EnvUtils;
+import core.utils.EnvUtils;
 
 @RestController
 @RequestMapping("api/users")

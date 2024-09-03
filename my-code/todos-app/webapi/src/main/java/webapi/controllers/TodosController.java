@@ -1,5 +1,8 @@
 package webapi.controllers;
 
+import java.sql.Connection;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,13 +11,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dataaccess.ConnectionManager;
+import jakarta.servlet.http.HttpServletRequest;
+import webapi.exceptions.UnauthorizedRequestException;
+import webapi.utils.ControllerUtils;
+
 @RestController
 @RequestMapping("api/todos")
 public class TodosController {
 
     @PostMapping
-    public String createTodo() {
-        return "Create todo";
+    public ResponseEntity<Object> createTodo(HttpServletRequest request) {
+        var bearerToken = request.getHeader("Authorization");
+
+        Connection connection = null;
+        var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+
+            return ResponseEntity.status(201).body("Todo Created");
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @GetMapping("{todoId}")

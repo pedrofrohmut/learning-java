@@ -2,28 +2,37 @@ package services;
 
 import java.util.Date;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SignatureAlgorithm;
 import core.services.IJwtService;
-import core.utils.Constants;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 public class JwtService implements IJwtService {
 
-	@Override
-	public String createSignInToken(String userId) {
+    @Override
+    public String createSignInToken(String userId, long duration, String secretKey) {
         var now = new Date();
-        var expiration = new Date(now.getTime() + Constants.jwtDuration);
+        var expiration = new Date(now.getTime() + duration);
 
-        var secretKey = Jwts.SIG.HS256.key().build();
+        final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 
-        var token =
-            Jwts.builder()
+        final var token = Jwts.builder()
                 .claim("userId", userId)
                 .issuedAt(now)
                 .expiration(expiration)
-                .signWith(secretKey)
+                .signWith(key)
                 .compact();
-
         return token;
-	}
+    }
+
+    @Override
+    public String getUserIdFromToken(String token, String secretKey) {
+        final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+
+        final var parsed = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+        final var payload = parsed.getPayload();
+        final var userId = payload.get("userId", String.class);
+        return userId;
+    }
+
 }
