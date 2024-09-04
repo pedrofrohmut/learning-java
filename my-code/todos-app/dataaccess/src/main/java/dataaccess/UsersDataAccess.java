@@ -3,6 +3,7 @@ package dataaccess;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.UUID;
 
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
@@ -44,6 +45,26 @@ public class UsersDataAccess implements IUsersDataAccess {
             stm.setString(3, form.phone);
             stm.setString(4, passwordHash);
             stm.execute();
+        }
+	}
+
+	@Override
+	public Optional<UserDbDto> findUserById(String userId) throws SQLException {
+        var sql = "SELECT id, name, email, phone, password_hash FROM users WHERE id = ?";
+        try (var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(userId));
+            try (var rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                var user = new UserDbDto();
+                user.id = rs.getString("id");
+                user.name = rs.getString("name");
+                user.email = rs.getString("email");
+                user.phone = rs.getString("phone");
+                user.passwordHash = rs.getString("password_hash");
+                return Optional.of(user);
+            }
         }
 	}
 

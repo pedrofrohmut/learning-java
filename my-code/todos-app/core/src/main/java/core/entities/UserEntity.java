@@ -1,6 +1,7 @@
 package core.entities;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignInFormDto;
@@ -16,6 +17,17 @@ import core.utils.Constants;
 import core.utils.EnvUtils;
 
 public class UserEntity {
+    public static void validateId(String id) throws InvalidUserException {
+        if (id == null || id.isBlank()) {
+            throw new InvalidUserException("UserId not provided. UserId is required and cannot be empty.");
+        }
+        try {
+            UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUserException("UserId not valid. UserId does not have a valid format.");
+        }
+    }
+
     public static void validateName(String name) throws InvalidUserException {
         if (name == null || name.isBlank()) {
             throw new InvalidUserException("Name not provided. Name is required and cannot be empty.");
@@ -24,7 +36,7 @@ public class UserEntity {
             throw new InvalidUserException("Name is too short. Name must be at least 3 characters long.");
         }
         if (name.length() > 120) {
-            throw new InvalidUserException("Name is too long. Name less than 120 characters long.");
+            throw new InvalidUserException("Name is too long. Name must be less than 120 characters long.");
         }
     }
 
@@ -33,7 +45,7 @@ public class UserEntity {
             throw new InvalidUserException("E-mail not provided. E-mail is required and cannot be empty.");
         }
         if (!email.matches(Constants.emailRegex)) {
-            throw new InvalidUserException("E-mail not valid. E-mail does not have a valid format");
+            throw new InvalidUserException("E-mail not valid. E-mail does not have a valid format.");
         }
         if (email.length() < 6) {
             throw new InvalidUserException("E-mail is too short. E-mail must be at least 6 characters long.");
@@ -57,7 +69,7 @@ public class UserEntity {
             throw new InvalidUserException("Password is too short. Password must be at least 3 characters long.");
         }
         if (password.length() > 32) {
-            throw new InvalidUserException("Password is too long. Password must less than 33 characters long.");
+            throw new InvalidUserException("Password is too long. Password must be less than 33 characters long.");
         }
     }
 
@@ -110,5 +122,13 @@ public class UserEntity {
     public static String createSignInToken(String userId, IJwtService jwtService) {
         final var secret = EnvUtils.getJwtSecretKey();
         return jwtService.createSignInToken(userId, Constants.jwtDuration, secret);
+    }
+
+    public static void checkUserExistsById(String userId, IUsersDataAccess usersDataAccess)
+            throws UserNotFoundException, SQLException {
+        var user = usersDataAccess.findUserById(userId);
+        if (!user.isPresent()) {
+            throw new UserNotFoundException("User not found by id");
+        }
     }
 }

@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import core.adapters.web.TodosWebAdapter;
+import core.dtos.NewTodoFormDto;
+import core.utils.EnvUtils;
 import dataaccess.ConnectionManager;
 import jakarta.servlet.http.HttpServletRequest;
+import utils.UseCasesFactory;
 import webapi.exceptions.UnauthorizedRequestException;
 import webapi.utils.ControllerUtils;
 
@@ -21,15 +26,17 @@ import webapi.utils.ControllerUtils;
 public class TodosController {
 
     @PostMapping
-    public ResponseEntity<Object> createTodo(HttpServletRequest request) {
+    public ResponseEntity<Object> createTodo(HttpServletRequest request, @RequestBody NewTodoFormDto form) {
         var bearerToken = request.getHeader("Authorization");
-
         Connection connection = null;
         var connectionManager = new ConnectionManager();
         try {
             final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
-
-            return ResponseEntity.status(201).body("Todo Created");
+            var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            var createTodoUseCase = UseCasesFactory.getCreateTodoUseCase(connection);
+            var response = TodosWebAdapter.createTodo(createTodoUseCase, form, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
         } catch (UnauthorizedRequestException e) {
             return ControllerUtils.getUnauthorizedResponse();
         } finally {

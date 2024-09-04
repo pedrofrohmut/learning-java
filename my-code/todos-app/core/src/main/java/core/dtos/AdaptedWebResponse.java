@@ -9,13 +9,17 @@ public class AdaptedWebResponse {
     private AdaptedWebResponse(int statusCode, Optional<Object> body) {
         this.statusCode = statusCode;
         this.body = body;
-	}
+    }
 
-	public static AdaptedWebResponse of(int statusCode, Optional<Object> body) {
+    public static AdaptedWebResponse of(int statusCode, Optional<Object> body) {
         return new AdaptedWebResponse(statusCode, body);
     }
 
     public static AdaptedWebResponse of(int statusCode, Object body) {
         return new AdaptedWebResponse(statusCode, Optional.of(body));
+    }
+
+    public static AdaptedWebResponse of(int statusCode) {
+        return new AdaptedWebResponse(statusCode, null);
     }
 }

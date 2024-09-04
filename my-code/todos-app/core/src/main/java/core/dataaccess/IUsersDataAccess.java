@@ -8,5 +8,8 @@ import core.dtos.UserDbDto;
 
 public interface IUsersDataAccess {
     Optional<UserDbDto> findUserByEmail(String email) throws SQLException;
+
+    Optional<UserDbDto> findUserById(String userId) throws SQLException;
+
     void create(SignUpFormDto form, String passwordHash) throws SQLException;
 }
