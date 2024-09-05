@@ -1,6 +1,8 @@
 package core.entities;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 import core.dataaccess.ITodosDataAccess;
@@ -70,5 +72,13 @@ public class TodoEntity {
         if (!todo.userId.equals(userId)) {
             throw new ResourceOwnershipException("This todo does not belong to this user");
         }
+    }
+
+    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess) throws SQLException {
+        final var todos = todosDataAccess.findByUserId(userId);
+        if (!todos.isPresent()) {
+            return new ArrayList<TodoDbDto>();
+        }
+        return todos.get();
     }
 }

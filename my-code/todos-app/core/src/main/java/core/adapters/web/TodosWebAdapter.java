@@ -8,6 +8,7 @@ import core.exceptions.ResourceOwnershipException;
 import core.exceptions.TodoNotFoundException;
 import core.exceptions.UserNotFoundException;
 import core.usecases.todos.CreateTodoUseCase;
+import core.usecases.todos.FindAllTodosByUserIdUseCase;
 import core.usecases.todos.FindOneTodoUseCase;
 
 public class TodosWebAdapter {
@@ -36,4 +37,18 @@ public class TodosWebAdapter {
             return AdaptedWebResponse.of(500, e.getMessage());
         }
     }
+
+    public static AdaptedWebResponse findAllByUserId(FindAllTodosByUserIdUseCase useCase, String userId, String authUserId) {
+        try {
+            final var todos = useCase.execute(userId, authUserId);
+            return AdaptedWebResponse.of(200, todos);
+        } catch (InvalidUserException | UserNotFoundException e) {
+            return AdaptedWebResponse.of(400, e.getMessage());
+        } catch (ResourceOwnershipException e) {
+            return AdaptedWebResponse.of(403, e.getMessage());
+        } catch (Exception e) {
+            return AdaptedWebResponse.of(500, e.getMessage());
+        }
+    }
+
 }

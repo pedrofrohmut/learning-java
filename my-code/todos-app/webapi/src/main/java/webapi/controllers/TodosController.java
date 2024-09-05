@@ -64,8 +64,22 @@ public class TodosController {
     }
 
     @GetMapping("user/{userId}")
-    public String findAllByUser(@PathVariable("userId") String userId) {
-        return "Find all by user id";
+    public ResponseEntity<Object> findAllByUser(HttpServletRequest request, @PathVariable("userId") String userId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var findAllTodosByUserIdUseCase = UseCasesFactory.getFindAllTodosByUserIdUseCase(connection);
+            final var response = TodosWebAdapter.findAllByUserId(findAllTodosByUserIdUseCase, userId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @PutMapping("{todoId}")

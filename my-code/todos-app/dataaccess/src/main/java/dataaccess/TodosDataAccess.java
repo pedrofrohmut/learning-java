@@ -2,6 +2,8 @@ package dataaccess;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,4 +48,28 @@ public class TodosDataAccess implements ITodosDataAccess {
             }
         }
     }
+
+	@Override
+	public Optional<Collection<TodoDbDto>> findByUserId(String userId) throws SQLException {
+        final var sql = "SELECT id, name, description, user_id FROM todos WHERE user_id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(userId));
+            try (final var rs = stm.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                final var todos = new ArrayList<TodoDbDto>();
+                // Do-While to not skip the first position of the if check above
+                do {
+                    final var todo = new TodoDbDto();
+                    todo.id = rs.getString("id");
+                    todo.name = rs.getString("name");
+                    todo.description = rs.getString("description");
+                    todo.userId = rs.getString("user_id");
+                    todos.add(todo);
+                } while(rs.next());
+                return Optional.of(todos);
+            }
+        }
+	}
 }

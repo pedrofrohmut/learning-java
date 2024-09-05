@@ -10,6 +10,7 @@ import core.dtos.UserDbDto;
 import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
 import core.exceptions.PasswordDontMatchException;
+import core.exceptions.ResourceOwnershipException;
 import core.exceptions.UserNotFoundException;
 import core.services.IJwtService;
 import core.services.IPasswordService;
@@ -129,6 +130,12 @@ public class UserEntity {
         final var user = usersDataAccess.findUserById(userId);
         if (!user.isPresent()) {
             throw new UserNotFoundException("User not found by id");
+        }
+    }
+
+    public static void checkIsTheSameUser(String userId, String authUserId) throws ResourceOwnershipException {
+        if (!userId.equals(authUserId)) {
+            throw new ResourceOwnershipException("User id provided is not the same of the user id authenticated");
         }
     }
 }
