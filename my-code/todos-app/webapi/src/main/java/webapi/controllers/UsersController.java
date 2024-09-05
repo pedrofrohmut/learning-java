@@ -22,12 +22,12 @@ public class UsersController {
     @PostMapping("signup")
     public ResponseEntity<Object> signUp(@RequestBody SignUpFormDto form) {
         Connection connection = null;
-        var connectionManager = new ConnectionManager();
+        final var connectionManager = new ConnectionManager();
         try {
-            var connectionString = EnvUtils.getConnectionString();
+            final var connectionString = EnvUtils.getConnectionString();
             connection = connectionManager.getOpenedConnection(connectionString);
-            var signUpUserUseCase = UseCasesFactory.getSignUpUserUseCase(connection);
-            var response = UsersWebAdapter.signUpUser(signUpUserUseCase, form);
+            final var signUpUserUseCase = UseCasesFactory.getSignUpUserUseCase(connection);
+            final var response = UsersWebAdapter.signUpUser(signUpUserUseCase, form);
             return ResponseEntity.status(response.statusCode).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);
@@ -37,12 +37,12 @@ public class UsersController {
     @PostMapping("signin")
     public ResponseEntity<Object> signIn(@RequestBody SignInFormDto form) {
         Connection connection = null;
-        var connectionManager = new ConnectionManager();
+        final var connectionManager = new ConnectionManager();
         try {
-            var connectionString = EnvUtils.getConnectionString();
+            final var connectionString = EnvUtils.getConnectionString();
             connection = connectionManager.getOpenedConnection(connectionString);
-            var signInUserUseCase = UseCasesFactory.getSignInUserUseCase(connection);
-            var response = UsersWebAdapter.signInUser(signInUserUseCase, form);
+            final var signInUserUseCase = UseCasesFactory.getSignInUserUseCase(connection);
+            final var response = UsersWebAdapter.signInUser(signInUserUseCase, form);
             return ResponseEntity.status(response.statusCode).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);

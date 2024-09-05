@@ -27,15 +27,15 @@ public class TodosController {
 
     @PostMapping
     public ResponseEntity<Object> createTodo(HttpServletRequest request, @RequestBody NewTodoFormDto form) {
-        var bearerToken = request.getHeader("Authorization");
+        final var bearerToken = request.getHeader("Authorization");
         Connection connection = null;
-        var connectionManager = new ConnectionManager();
+        final var connectionManager = new ConnectionManager();
         try {
             final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
-            var connectionString = EnvUtils.getConnectionString();
+            final var connectionString = EnvUtils.getConnectionString();
             connection = connectionManager.getOpenedConnection(connectionString);
-            var createTodoUseCase = UseCasesFactory.getCreateTodoUseCase(connection);
-            var response = TodosWebAdapter.createTodo(createTodoUseCase, form, authUserId);
+            final var createTodoUseCase = UseCasesFactory.getCreateTodoUseCase(connection);
+            final var response = TodosWebAdapter.createTodo(createTodoUseCase, form, authUserId);
             return ResponseEntity.status(response.statusCode).body(response.body);
         } catch (UnauthorizedRequestException e) {
             return ControllerUtils.getUnauthorizedResponse();
@@ -45,12 +45,26 @@ public class TodosController {
     }
 
     @GetMapping("{todoId}")
-    public String findOne(@PathVariable String todoId) {
-        return "Find one";
+    public ResponseEntity<Object> findOne(HttpServletRequest request, @PathVariable("todoId") String todoId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var findOneTodoUseCase = UseCasesFactory.getFindOneTodoUseCase(connection);
+            final var response = TodosWebAdapter.findOne(findOneTodoUseCase, todoId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
-    @GetMapping("{userId}")
-    public String findAllByUser(@PathVariable String userId) {
+    @GetMapping("user/{userId}")
+    public String findAllByUser(@PathVariable("userId") String userId) {
         return "Find all by user id";
     }
 

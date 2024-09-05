@@ -10,8 +10,8 @@ public class ConnectionManager implements IConnectionManager {
 
     public Connection getOpenedConnection(String connectionString) {
         try {
-            var connection = DriverManager.getConnection(connectionString);
-            if (! connection.isValid(1000)) {
+            final var connection = DriverManager.getConnection(connectionString);
+            if (!connection.isValid(1000)) {
                 throw new RuntimeException("Error trying to get an opened connection. The connection is not valid");
             }
             System.out.println("Connection is opened");

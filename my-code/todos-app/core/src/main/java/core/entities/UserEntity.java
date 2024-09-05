@@ -87,7 +87,7 @@ public class UserEntity {
 
     public static void checkEmailIsAvailable(String email, IUsersDataAccess usersDataAccess)
             throws EmailAlreadyInUseException, SQLException {
-        var user = usersDataAccess.findUserByEmail(email);
+        final var user = usersDataAccess.findUserByEmail(email);
         if (user.isPresent()) {
             throw new EmailAlreadyInUseException();
         }
@@ -104,7 +104,7 @@ public class UserEntity {
 
     public static UserDbDto findUserByEmail(String email, IUsersDataAccess usersDataAccess)
             throws SQLException, UserNotFoundException {
-        var userFound = usersDataAccess.findUserByEmail(email);
+        final var userFound = usersDataAccess.findUserByEmail(email);
         if (!userFound.isPresent()) {
             throw new UserNotFoundException("User not found by e-mail");
         }
@@ -113,7 +113,7 @@ public class UserEntity {
 
     public static void verifyPassword(String password, String passwordHash, IPasswordService passwordService)
             throws PasswordDontMatchException {
-        var isMatch = passwordService.verifyPassword(password, passwordHash);
+        final var isMatch = passwordService.verifyPassword(password, passwordHash);
         if (!isMatch) {
             throw new PasswordDontMatchException();
         }
@@ -126,7 +126,7 @@ public class UserEntity {
 
     public static void checkUserExistsById(String userId, IUsersDataAccess usersDataAccess)
             throws UserNotFoundException, SQLException {
-        var user = usersDataAccess.findUserById(userId);
+        final var user = usersDataAccess.findUserById(userId);
         if (!user.isPresent()) {
             throw new UserNotFoundException("User not found by id");
         }

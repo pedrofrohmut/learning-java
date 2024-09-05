@@ -11,8 +11,8 @@ public class JwtService implements IJwtService {
 
     @Override
     public String createSignInToken(String userId, long duration, String secretKey) {
-        var now = new Date();
-        var expiration = new Date(now.getTime() + duration);
+        final var now = new Date();
+        final var expiration = new Date(now.getTime() + duration);
 
         final var key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
 

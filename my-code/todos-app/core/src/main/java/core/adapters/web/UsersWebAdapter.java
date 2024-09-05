@@ -24,7 +24,7 @@ public class UsersWebAdapter {
 
     public static AdaptedWebResponse signInUser(SignInUserUseCase useCase, SignInFormDto form) {
         try {
-            var signedUser = useCase.execute(form);
+            final var signedUser = useCase.execute(form);
             return AdaptedWebResponse.of(200, signedUser);
         } catch (InvalidUserException | UserNotFoundException | PasswordDontMatchException e) {
             return AdaptedWebResponse.of(400, e.getMessage());
