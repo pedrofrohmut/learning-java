@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import core.dtos.NewTodoFormDto;
 import core.dtos.TodoDbDto;
+import core.dtos.UpdateTodoFormDto;
 
 public interface ITodosDataAccess {
     void create(NewTodoFormDto form, String authUserId) throws SQLException;
@@ -13,4 +14,6 @@ public interface ITodosDataAccess {
     Optional<TodoDbDto> findById(String todoId) throws SQLException;
 
     Optional<Collection<TodoDbDto>> findByUserId(String userId) throws SQLException;
+
+    void update(String todoId, UpdateTodoFormDto form) throws SQLException;
 }

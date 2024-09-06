@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import core.adapters.web.TodosWebAdapter;
 import core.dtos.NewTodoFormDto;
+import core.dtos.UpdateTodoFormDto;
 import core.utils.EnvUtils;
 import dataaccess.ConnectionManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class TodosController {
             final var connectionString = EnvUtils.getConnectionString();
             connection = connectionManager.getOpenedConnection(connectionString);
             final var createTodoUseCase = UseCasesFactory.getCreateTodoUseCase(connection);
-            final var response = TodosWebAdapter.createTodo(createTodoUseCase, form, authUserId);
+            final var response = TodosWebAdapter.create(createTodoUseCase, form, authUserId);
             return ResponseEntity.status(response.statusCode).body(response.body);
         } catch (UnauthorizedRequestException e) {
             return ControllerUtils.getUnauthorizedResponse();
@@ -83,8 +84,23 @@ public class TodosController {
     }
 
     @PutMapping("{todoId}")
-    public String updateTodo(@PathVariable String todoId) {
-        return "Update todo";
+    public ResponseEntity<Object> updateTodo(HttpServletRequest request, @PathVariable("todoId") String todoId,
+            @RequestBody UpdateTodoFormDto form) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var updateTodoUseCase = UseCasesFactory.getUpdateTodoUseCase(connection);
+            final var response = TodosWebAdapter.update(updateTodoUseCase, todoId, form, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @PutMapping("toggle/{todoId}")

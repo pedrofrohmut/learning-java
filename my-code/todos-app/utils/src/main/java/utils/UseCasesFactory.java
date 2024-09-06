@@ -5,6 +5,7 @@ import java.sql.Connection;
 import core.usecases.todos.CreateTodoUseCase;
 import core.usecases.todos.FindOneTodoUseCase;
 import core.usecases.todos.FindAllTodosByUserIdUseCase;
+import core.usecases.todos.UpdateTodoUseCase;
 import core.usecases.users.SignInUserUseCase;
 import core.usecases.users.SignUpUserUseCase;
 import dataaccess.TodosDataAccess;
@@ -43,6 +44,12 @@ public class UseCasesFactory {
         final var usersDataAccess = new UsersDataAccess(connection);
         final var todosDataAccess = new TodosDataAccess(connection);
         return new FindAllTodosByUserIdUseCase(usersDataAccess, todosDataAccess);
+    }
+
+    public static UpdateTodoUseCase getUpdateTodoUseCase(Connection connection) {
+        final var usersDataAccess = new UsersDataAccess(connection);
+        final var todosDataAccess = new TodosDataAccess(connection);
+        return new UpdateTodoUseCase(usersDataAccess, todosDataAccess);
     }
 
 }

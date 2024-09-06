@@ -8,6 +8,7 @@ import java.util.UUID;
 import core.dataaccess.ITodosDataAccess;
 import core.dtos.NewTodoFormDto;
 import core.dtos.TodoDbDto;
+import core.dtos.UpdateTodoFormDto;
 import core.exceptions.InvalidTodoException;
 import core.exceptions.ResourceOwnershipException;
 import core.exceptions.TodoNotFoundException;
@@ -54,6 +55,11 @@ public class TodoEntity {
         validateDescription(form.description);
     }
 
+    public static void validateTodo(UpdateTodoFormDto form) throws InvalidTodoException {
+        validateName(form.name);
+        validateDescription(form.description);
+    }
+
     public static void createTodo(NewTodoFormDto form, String authUserId, ITodosDataAccess todosDataAccess)
             throws SQLException {
         todosDataAccess.create(form, authUserId);
@@ -74,11 +80,17 @@ public class TodoEntity {
         }
     }
 
-    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess) throws SQLException {
+    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess)
+            throws SQLException {
         final var todos = todosDataAccess.findByUserId(userId);
         if (!todos.isPresent()) {
             return new ArrayList<TodoDbDto>();
         }
         return todos.get();
+    }
+
+    public static void updateTodo(String todoId, UpdateTodoFormDto form, ITodosDataAccess todosDataAccess)
+            throws SQLException {
+        todosDataAccess.update(todoId, form);
     }
 }

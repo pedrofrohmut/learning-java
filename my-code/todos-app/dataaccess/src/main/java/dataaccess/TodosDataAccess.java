@@ -10,6 +10,7 @@ import java.util.UUID;
 import core.dataaccess.ITodosDataAccess;
 import core.dtos.NewTodoFormDto;
 import core.dtos.TodoDbDto;
+import core.dtos.UpdateTodoFormDto;
 
 public class TodosDataAccess implements ITodosDataAccess {
 
@@ -22,7 +23,7 @@ public class TodosDataAccess implements ITodosDataAccess {
     @Override
     public void create(NewTodoFormDto form, String authUserId) throws SQLException {
         final var sql = "INSERT INTO todos (name, description, user_id) VALUES (?, ?, ?)";
-        try (var stm = this.connection.prepareStatement(sql)) {
+        try (final var stm = this.connection.prepareStatement(sql)) {
             stm.setString(1, form.name);
             stm.setString(2, form.description);
             stm.setObject(3, UUID.fromString(authUserId));
@@ -72,4 +73,15 @@ public class TodosDataAccess implements ITodosDataAccess {
             }
         }
 	}
+
+	@Override
+	public void update(String todoId, UpdateTodoFormDto form) throws SQLException {
+        final var sql = "UPDATE todos SET name = ?, description = ? WHERE id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setString(1, form.name);
+            stm.setString(2, form.description);
+            stm.setObject(3, UUID.fromString(todoId));
+            stm.execute();
+        }
+    }
 }
