@@ -5,4 +5,5 @@ public class TodoDbDto {
     public String name;
     public String description;
     public String userId;
+    public boolean isDone;
 }

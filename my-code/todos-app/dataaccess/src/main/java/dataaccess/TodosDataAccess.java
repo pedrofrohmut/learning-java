@@ -33,7 +33,7 @@ public class TodosDataAccess implements ITodosDataAccess {
 
     @Override
     public Optional<TodoDbDto> findById(String todoId) throws SQLException {
-        final var sql = "SELECT id, name, description, user_id FROM todos WHERE id = ?";
+        final var sql = "SELECT id, name, description, is_done, user_id FROM todos WHERE id = ?";
         try (final var stm = this.connection.prepareStatement(sql)) {
             stm.setObject(1, UUID.fromString(todoId));
             try (final var rs = stm.executeQuery()) {
@@ -44,6 +44,7 @@ public class TodosDataAccess implements ITodosDataAccess {
                 todo.id = rs.getString("id");
                 todo.name = rs.getString("name");
                 todo.description = rs.getString("description");
+                todo.isDone = rs.getBoolean("is_done");
                 todo.userId = rs.getString("user_id");
                 return Optional.of(todo);
             }
@@ -52,7 +53,7 @@ public class TodosDataAccess implements ITodosDataAccess {
 
 	@Override
 	public Optional<Collection<TodoDbDto>> findByUserId(String userId) throws SQLException {
-        final var sql = "SELECT id, name, description, user_id FROM todos WHERE user_id = ?";
+        final var sql = "SELECT id, name, description, is_done, user_id FROM todos WHERE user_id = ?";
         try (final var stm = this.connection.prepareStatement(sql)) {
             stm.setObject(1, UUID.fromString(userId));
             try (final var rs = stm.executeQuery()) {
@@ -66,6 +67,7 @@ public class TodosDataAccess implements ITodosDataAccess {
                     todo.id = rs.getString("id");
                     todo.name = rs.getString("name");
                     todo.description = rs.getString("description");
+                    todo.isDone = rs.getBoolean("is_done");
                     todo.userId = rs.getString("user_id");
                     todos.add(todo);
                 } while(rs.next());
