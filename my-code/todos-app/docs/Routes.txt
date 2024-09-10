@@ -26,6 +26,9 @@ Todos:
     Set is not done:
         private PUT api/todos/setnotdone/{todoId}
 
+    Toggle:
+        private PUT api/todos/toggle/{todoId}
+
     Delete:
         private DELETE api/todos/{todoId}
 

@@ -80,8 +80,7 @@ public class TodoEntity {
         }
     }
 
-    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess)
-            throws SQLException {
+    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess) throws SQLException {
         final var todos = todosDataAccess.findByUserId(userId);
         if (!todos.isPresent()) {
             return new ArrayList<TodoDbDto>();
@@ -89,19 +88,24 @@ public class TodoEntity {
         return todos.get();
     }
 
-    public static void updateTodo(String todoId, UpdateTodoFormDto form, ITodosDataAccess todosDataAccess)
-            throws SQLException {
+    public static void updateTodo(String todoId, UpdateTodoFormDto form, ITodosDataAccess todosDataAccess) throws SQLException {
         todosDataAccess.update(todoId, form);
     }
 
-    public static void setTodoIsDone(String todoId, ITodosDataAccess todosDataAccess)
-            throws SQLException {
+    public static void setTodoIsDone(String todoId, ITodosDataAccess todosDataAccess) throws SQLException {
         todosDataAccess.setIsDone(todoId);
     }
 
-    public static void setTodoIsNotDone(String todoId, ITodosDataAccess todosDataAccess)
-            throws SQLException {
+    public static void setTodoIsNotDone(String todoId, ITodosDataAccess todosDataAccess) throws SQLException {
         todosDataAccess.setIsNotDone(todoId);
+    }
+
+    public static void toggleTodo(TodoDbDto todo, ITodosDataAccess todosDataAccess) throws SQLException {
+        if (todo.isDone) {
+            todosDataAccess.setIsNotDone(todo.id);
+        } else {
+            todosDataAccess.setIsDone(todo.id);
+        }
     }
 
 }

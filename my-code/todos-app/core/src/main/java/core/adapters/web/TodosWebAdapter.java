@@ -13,6 +13,7 @@ import core.usecases.todos.FindAllTodosByUserIdUseCase;
 import core.usecases.todos.FindOneTodoUseCase;
 import core.usecases.todos.SetTodoIsDoneUseCase;
 import core.usecases.todos.SetTodoIsNotDoneUseCase;
+import core.usecases.todos.ToggleTodoUseCase;
 import core.usecases.todos.UpdateTodoUseCase;
 
 public class TodosWebAdapter {
@@ -84,6 +85,19 @@ public class TodosWebAdapter {
     }
 
     public static AdaptedWebResponse setIsNotDone(SetTodoIsNotDoneUseCase useCase, String userId, String authUserId) {
+        try {
+            useCase.execute(userId, authUserId);
+            return AdaptedWebResponse.of(204);
+        } catch (InvalidUserException | UserNotFoundException | InvalidTodoException e) {
+            return AdaptedWebResponse.of(400, e.getMessage());
+        } catch (ResourceOwnershipException e) {
+            return AdaptedWebResponse.of(403, e.getMessage());
+        } catch (Exception e) {
+            return AdaptedWebResponse.of(500, e.getMessage());
+        }
+    }
+
+    public static AdaptedWebResponse toggle(ToggleTodoUseCase useCase, String userId, String authUserId) {
         try {
             useCase.execute(userId, authUserId);
             return AdaptedWebResponse.of(204);

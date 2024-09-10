@@ -141,6 +141,25 @@ public class TodosController {
         }
     }
 
+    @PutMapping("toggle/{todoId}")
+    public ResponseEntity<Object> toggleTodo(HttpServletRequest request, @PathVariable("todoId") String todoId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var toggleTodoUseCase = UseCasesFactory.getToggleTodoUseCase(connection);
+            final var response = TodosWebAdapter.toggle(toggleTodoUseCase, todoId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
+    }
+
     @DeleteMapping("{todoId}")
     public String deleteTodo(@PathVariable("todoId") String todoId) {
         return "Delete todo";
