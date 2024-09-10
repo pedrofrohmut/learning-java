@@ -84,4 +84,23 @@ public class TodosDataAccess implements ITodosDataAccess {
             stm.execute();
         }
     }
+
+	@Override
+	public void setIsDone(String todoId) throws SQLException {
+        final var sql = "UPDATE todos SET is_done = true WHERE id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(todoId));
+            stm.execute();
+        }
+	}
+
+	@Override
+	public void setIsNotDone(String todoId) throws SQLException {
+        final var sql = "UPDATE todos SET is_done = false WHERE id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(todoId));
+            stm.execute();
+        }
+	}
+
 }

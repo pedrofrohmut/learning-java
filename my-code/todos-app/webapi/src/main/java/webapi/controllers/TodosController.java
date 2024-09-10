@@ -103,13 +103,46 @@ public class TodosController {
         }
     }
 
-    @PutMapping("toggle/{todoId}")
-    public String toggleTodo(@PathVariable String todoId) {
-        return "Toggle todo";
+    @PutMapping("setdone/{todoId}")
+    public ResponseEntity<Object> setTodoIsDone(HttpServletRequest request, @PathVariable("todoId") String todoId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var setTodoIsDoneUseCase = UseCasesFactory.getSetTodoIsDoneUseCase(connection);
+            final var response = TodosWebAdapter.setIsDone(setTodoIsDoneUseCase, todoId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
+    }
+
+    @PutMapping("setnotdone/{todoId}")
+    public ResponseEntity<Object> setTodoIsNotDone(HttpServletRequest request, @PathVariable("todoId") String todoId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var setTodoIsNotDoneUseCase = UseCasesFactory.getSetTodoIsNotDoneUseCase(connection);
+            final var response = TodosWebAdapter.setIsNotDone(setTodoIsNotDoneUseCase, todoId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @DeleteMapping("{todoId}")
-    public String deleteTodo(@PathVariable String todoId) {
+    public String deleteTodo(@PathVariable("todoId") String todoId) {
         return "Delete todo";
     }
 

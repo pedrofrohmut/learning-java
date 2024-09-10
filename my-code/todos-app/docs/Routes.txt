@@ -20,8 +20,11 @@ Todos:
     Update:
         private PUT api/todos/{todoId}
 
-    Toggle done:
-        private PUT api/todos/toggle/{todoId}
+    Set is done:
+        private PUT api/todos/setdone/{todoId}
+
+    Set is not done:
+        private PUT api/todos/setnotdone/{todoId}
 
     Delete:
         private DELETE api/todos/{todoId}

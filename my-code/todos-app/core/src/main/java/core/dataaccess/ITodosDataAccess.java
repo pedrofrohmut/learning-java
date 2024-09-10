@@ -16,4 +16,8 @@ public interface ITodosDataAccess {
     Optional<Collection<TodoDbDto>> findByUserId(String userId) throws SQLException;
 
     void update(String todoId, UpdateTodoFormDto form) throws SQLException;
+
+    void setIsDone(String todoId) throws SQLException;
+
+    void setIsNotDone(String todoId) throws SQLException;
 }

@@ -93,4 +93,15 @@ public class TodoEntity {
             throws SQLException {
         todosDataAccess.update(todoId, form);
     }
+
+    public static void setTodoIsDone(String todoId, ITodosDataAccess todosDataAccess)
+            throws SQLException {
+        todosDataAccess.setIsDone(todoId);
+    }
+
+    public static void setTodoIsNotDone(String todoId, ITodosDataAccess todosDataAccess)
+            throws SQLException {
+        todosDataAccess.setIsNotDone(todoId);
+    }
+
 }
