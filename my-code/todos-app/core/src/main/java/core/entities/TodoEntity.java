@@ -108,4 +108,8 @@ public class TodoEntity {
         }
     }
 
+    public static void deleteTodo(String todoId, ITodosDataAccess todosDataAccess) throws SQLException {
+        todosDataAccess.delete(todoId);
+    }
+
 }

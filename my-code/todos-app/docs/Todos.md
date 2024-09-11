@@ -1,5 +1,8 @@
 # Todos for this project
 
+  - [ ] On the ControllerUtils.getUserIdFromToken if there is not the Bearer but there is a string
+    try to pass the string there to the jwtService to parse.
+
   - [ ] Checking if I can do some useCases with only one SQL query. Exp: Instead of checking if the
     todo exists and if the todo is from the user before deleting it. Try just to delete it if it has
     the todoId = ? and userId = ? and then check if the operation was a success or not. This way

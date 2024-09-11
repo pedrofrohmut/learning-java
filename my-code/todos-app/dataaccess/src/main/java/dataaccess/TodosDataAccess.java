@@ -105,4 +105,14 @@ public class TodosDataAccess implements ITodosDataAccess {
         }
 	}
 
+	@Override
+	public void delete(String todoId) throws SQLException {
+        final var sql = "DELETE FROM todos WHERE id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(todoId));
+            var foo = stm.execute();
+            System.out.println("TODO DELETED? foo: " + foo);
+        }
+	}
+
 }

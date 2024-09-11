@@ -3,6 +3,7 @@ package utils;
 import java.sql.Connection;
 
 import core.usecases.todos.CreateTodoUseCase;
+import core.usecases.todos.DeleteTodoUseCase;
 import core.usecases.todos.FindOneTodoUseCase;
 import core.usecases.todos.SetTodoIsDoneUseCase;
 import core.usecases.todos.SetTodoIsNotDoneUseCase;
@@ -71,6 +72,12 @@ public class UseCasesFactory {
         final var usersDataAccess = new UsersDataAccess(connection);
         final var todosDataAccess = new TodosDataAccess(connection);
         return new ToggleTodoUseCase(usersDataAccess, todosDataAccess);
+    }
+
+    public static DeleteTodoUseCase getDeleteTodoUseCase(Connection connection) {
+        final var usersDataAccess = new UsersDataAccess(connection);
+        final var todosDataAccess = new TodosDataAccess(connection);
+        return new DeleteTodoUseCase(usersDataAccess, todosDataAccess);
     }
 
 }

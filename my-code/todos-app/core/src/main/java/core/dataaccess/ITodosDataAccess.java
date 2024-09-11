@@ -20,4 +20,6 @@ public interface ITodosDataAccess {
     void setIsDone(String todoId) throws SQLException;
 
     void setIsNotDone(String todoId) throws SQLException;
+
+    void delete(String todoId) throws SQLException;
 }
