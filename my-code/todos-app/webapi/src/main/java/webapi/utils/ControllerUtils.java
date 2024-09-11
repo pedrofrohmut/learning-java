@@ -13,10 +13,13 @@ public class ControllerUtils {
         }
 
         final var tokenSplited = bearerToken.split(" ");
-        if (! tokenSplited[0].equals("Bearer") || tokenSplited[1].isEmpty()) {
+        if (tokenSplited[0].isEmpty()) {
             throw new UnauthorizedRequestException();
         }
-        final var token = tokenSplited[1];
+        if (tokenSplited[0].equals("Bearer") && tokenSplited[1].isEmpty()) {
+            throw new UnauthorizedRequestException();
+        }
+        final var token = tokenSplited[0].equals("Bearer") ? tokenSplited[1] : tokenSplited[0];
 
         try {
             final var jwtSecret = EnvUtils.getJwtSecretKey();
