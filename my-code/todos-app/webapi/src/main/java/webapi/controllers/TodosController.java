@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import core.adapters.web.TodosWebAdapter;
 import core.dtos.NewTodoFormDto;
 import core.dtos.UpdateTodoFormDto;
-import core.usecases.todos.DeleteTodoUseCase;
 import core.utils.EnvUtils;
 import dataaccess.ConnectionManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -172,6 +171,25 @@ public class TodosController {
             connection = connectionManager.getOpenedConnection(connectionString);
             final var deleteTodoUseCase = UseCasesFactory.getDeleteTodoUseCase(connection);
             final var response = TodosWebAdapter.delete(deleteTodoUseCase, todoId, authUserId);
+            return ResponseEntity.status(response.statusCode).body(response.body);
+        } catch (UnauthorizedRequestException e) {
+            return ControllerUtils.getUnauthorizedResponse();
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
+    }
+
+    @DeleteMapping("simplified/{todoId}")
+    public ResponseEntity<Object> simplifiedDeleteTodo(HttpServletRequest request, @PathVariable("todoId") String todoId) {
+        final var bearerToken = request.getHeader("Authorization");
+        Connection connection = null;
+        final var connectionManager = new ConnectionManager();
+        try {
+            final var authUserId = ControllerUtils.getUserIdFromToken(bearerToken);
+            final var connectionString = EnvUtils.getConnectionString();
+            connection = connectionManager.getOpenedConnection(connectionString);
+            final var simplifiedDeleteTodoUseCase = UseCasesFactory.getSimplifiedDeleteTodoUseCase(connection);
+            final var response = TodosWebAdapter.simplifiedDelete(simplifiedDeleteTodoUseCase, todoId, authUserId);
             return ResponseEntity.status(response.statusCode).body(response.body);
         } catch (UnauthorizedRequestException e) {
             return ControllerUtils.getUnauthorizedResponse();

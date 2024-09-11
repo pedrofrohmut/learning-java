@@ -80,7 +80,8 @@ public class TodoEntity {
         }
     }
 
-    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess) throws SQLException {
+    public static Collection<TodoDbDto> findTodosByUserId(String userId, ITodosDataAccess todosDataAccess)
+            throws SQLException {
         final var todos = todosDataAccess.findByUserId(userId);
         if (!todos.isPresent()) {
             return new ArrayList<TodoDbDto>();
@@ -88,7 +89,8 @@ public class TodoEntity {
         return todos.get();
     }
 
-    public static void updateTodo(String todoId, UpdateTodoFormDto form, ITodosDataAccess todosDataAccess) throws SQLException {
+    public static void updateTodo(String todoId, UpdateTodoFormDto form, ITodosDataAccess todosDataAccess)
+            throws SQLException {
         todosDataAccess.update(todoId, form);
     }
 
@@ -110,6 +112,14 @@ public class TodoEntity {
 
     public static void deleteTodo(String todoId, ITodosDataAccess todosDataAccess) throws SQLException {
         todosDataAccess.delete(todoId);
+    }
+
+    public static void deleteTodoOfUser(String todoId, String userId, ITodosDataAccess todosDataAccess)
+            throws SQLException, TodoNotFoundException {
+        final var numberOfRowsAffect = todosDataAccess.deleteOfUser(todoId, userId);
+        if (numberOfRowsAffect <= 0) {
+            throw new TodoNotFoundException("Todo with this id and userId not found to be deleted");
+        }
     }
 
 }

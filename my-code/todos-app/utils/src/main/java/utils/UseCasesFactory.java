@@ -4,11 +4,12 @@ import java.sql.Connection;
 
 import core.usecases.todos.CreateTodoUseCase;
 import core.usecases.todos.DeleteTodoUseCase;
+import core.usecases.todos.FindAllTodosByUserIdUseCase;
 import core.usecases.todos.FindOneTodoUseCase;
 import core.usecases.todos.SetTodoIsDoneUseCase;
 import core.usecases.todos.SetTodoIsNotDoneUseCase;
+import core.usecases.todos.SimplifiedDeleteTodoUseCase;
 import core.usecases.todos.ToggleTodoUseCase;
-import core.usecases.todos.FindAllTodosByUserIdUseCase;
 import core.usecases.todos.UpdateTodoUseCase;
 import core.usecases.users.SignInUserUseCase;
 import core.usecases.users.SignUpUserUseCase;
@@ -78,6 +79,11 @@ public class UseCasesFactory {
         final var usersDataAccess = new UsersDataAccess(connection);
         final var todosDataAccess = new TodosDataAccess(connection);
         return new DeleteTodoUseCase(usersDataAccess, todosDataAccess);
+    }
+
+    public static SimplifiedDeleteTodoUseCase getSimplifiedDeleteTodoUseCase(Connection connection) {
+        final var todosDataAccess = new TodosDataAccess(connection);
+        return new SimplifiedDeleteTodoUseCase(todosDataAccess);
     }
 
 }

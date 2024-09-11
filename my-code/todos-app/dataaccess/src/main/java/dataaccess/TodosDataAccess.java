@@ -110,8 +110,25 @@ public class TodosDataAccess implements ITodosDataAccess {
         final var sql = "DELETE FROM todos WHERE id = ?";
         try (final var stm = this.connection.prepareStatement(sql)) {
             stm.setObject(1, UUID.fromString(todoId));
-            var foo = stm.execute();
-            System.out.println("TODO DELETED? foo: " + foo);
+            stm.execute();
+        }
+	}
+
+	@Override
+	public int deleteOfUser(String todoId, String userId) throws SQLException {
+        final var sql = "DELETE FROM todos WHERE id = ? AND user_id = ?";
+        try (final var stm = this.connection.prepareStatement(sql)) {
+            stm.setObject(1, UUID.fromString(todoId));
+            stm.setObject(2, UUID.fromString(userId));
+
+            final var numberOfRowsAffected = stm.executeUpdate();
+            if (numberOfRowsAffected <= 0) {
+                System.out.println("[DEBUG] No rows affected");
+            } else {
+                System.out.println("[DEBUG] Todo deleted successfully");
+            }
+
+            return numberOfRowsAffected;
         }
 	}
 

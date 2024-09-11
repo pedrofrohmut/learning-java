@@ -22,4 +22,6 @@ public interface ITodosDataAccess {
     void setIsNotDone(String todoId) throws SQLException;
 
     void delete(String todoId) throws SQLException;
+
+    int deleteOfUser(String todoId, String userId) throws SQLException;
 }

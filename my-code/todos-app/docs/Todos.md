@@ -1,12 +1,15 @@
 # Todos for this project
 
-  - [ ] On the ControllerUtils.getUserIdFromToken if there is not the Bearer but there is a string
+  - [X] On the ControllerUtils.getUserIdFromToken if there is not the Bearer but there is a string
     try to pass the string there to the jwtService to parse.
 
-  - [ ] Checking if I can do some useCases with only one SQL query. Exp: Instead of checking if the
+  - [X] Checking if I can do some useCases with only one SQL query. Exp: Instead of checking if the
     todo exists and if the todo is from the user before deleting it. Try just to delete it if it has
     the todoId = ? and userId = ? and then check if the operation was a success or not. This way
     make the useCase a lot simpler but not changing its functionality.
+
+  - [ ] Make the ToggleTodo use case in the three versions: full, simplified and cached so it will be
+    like a reference to be used for other useCases if they wanted to change
 
   - [ ] Check out the Spring Framework how to replace the UseCasesFactory by the spring beans
     functionality.
