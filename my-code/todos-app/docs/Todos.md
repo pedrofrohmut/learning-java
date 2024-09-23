@@ -24,3 +24,8 @@
 
   - [ ] Make a home page for the API that contains all the routes probably the same of the
     Routes.txt of this doc but in html or json version
+
+  - [ ] Create a use case for the createTodo that gets the form and then uses TodoEntity.of(form) to
+    make an entity Todo. Then with this entity you can use all other methods. Having the same
+    function that the createTodo with only DTOs, but using it as an entity to check how it, as an
+    alternative.
