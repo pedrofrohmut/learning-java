@@ -1,7 +1,9 @@
 package my;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -16,32 +18,6 @@ import my.entities.Transaction;
 @SpringBootTest
 class TodosappApplicationTests {
 
-    // test("Should create a transaction", async () => {
-    // const code = uuidv4()
-    // const requestBody = { code, value: 1000, numberInstallments: 12,
-    // paymentMethod: "credit_card" }
-    // const createResponse = await axios.post(`${BASE_URL}/transactions`,
-    // requestBody)
-    //
-    // expect(createResponse.status).toBe(201)
-    //
-    // const getResponse = await axios.get(`${BASE_URL}/transactions/${code}`)
-    //
-    // expect(getResponse.status).toBe(200)
-    //
-    // const transaction = getResponse.data
-    //
-    // expect(transaction.value).toBe(1000)
-    // expect(transaction.numberInstallments).toBe(12)
-    // expect(transaction.paymentMethod).toBe("credit_card")
-    //
-    // expect(transaction.installments).toHaveLength(12)
-    // const first = transaction.installments.find((x: any) => x.number == 1)
-    // expect(first?.value).toBe(83.33)
-    // const last = transaction.installments.find((x: any) => x.number == 12)
-    // expect(last?.value).toBe(83.37)
-    // })
-
     // given, when, then
     // arrange, act, assert
     @Test
@@ -51,7 +27,7 @@ class TodosappApplicationTests {
         final var requestBody = new HashMap<String, Object>();
         requestBody.put("code", transactionCode);
         requestBody.put("value", 1000);
-        requestBody.put("numberOfIntallments", 12);
+        requestBody.put("numberOfInstallments", 12);
         requestBody.put("paymentMethod", "credit_card");
 
         final var reqHeaders = new HttpHeaders();
@@ -69,12 +45,21 @@ class TodosappApplicationTests {
                 .getForEntity("http://localhost:5000/api/transactions/" + transactionCode, Transaction.class);
         assertEquals(200, response2.getStatusCode().value());
 
+        // Check Transaction
         final var transaction = response2.getBody();
         assertEquals(transactionCode, transaction.getCode());
-        assertEquals(1000, transaction.getValue());
-        assertEquals(12, transaction.getNumberOfInstallments());
+        assertEquals(new BigDecimal("1000"), transaction.getValue());
         assertEquals("credit_card", transaction.getPaymentMethod());
+        assertEquals(12, transaction.getNumberOfInstallments());
 
-        // TODO: make installments part first to be 83.33 and last to be 83.37
+        // Check Transaction Installments
+        final var installments = transaction.getInstallments();
+        assertEquals(12, installments.size());
+        final var first = installments.stream().filter(x -> x.getNumber() == 1).findFirst();
+        assertTrue(first.isPresent());
+        assertEquals(new BigDecimal("83.33"), first.get().getValue());
+        final var last = installments.stream().filter(x -> x.getNumber() == 12).findFirst();
+        assertTrue(last.isPresent());
+        assertEquals(new BigDecimal("83.37"), last.get().getValue());
     }
 }
