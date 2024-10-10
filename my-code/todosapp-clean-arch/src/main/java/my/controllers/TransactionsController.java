@@ -26,7 +26,8 @@ public class TransactionsController {
     public ResponseEntity<Object> createTransaction(@RequestBody CreateTransactionForm body) {
         try {
             final var createTransactionUseCase = new CreateTransactionUseCase();
-            final var input = createTransactionUseCase. new Input(body.code, body.value, body.numberOfInstallments, body.paymentMethod);
+            final var input = createTransactionUseCase.new Input(body.code, body.value, body.numberOfInstallments,
+                    body.paymentMethod);
             createTransactionUseCase.execute(input, transactions);
             return ResponseEntity.status(201).body(null);
         } catch (ArithmeticException e) {
@@ -39,7 +40,8 @@ public class TransactionsController {
     @GetMapping("/{code}")
     public ResponseEntity<Object> getTransaction(@PathVariable String code) {
         final var getTransactionUseCase = new GetTransactionUseCase();
-        final var input = getTransactionUseCase.new Input(code);
+        final var input = getTransactionUseCase.new Input();
+        input.code = code;
         final var foundTransaction = getTransactionUseCase.execute(input, transactions);
 
         if (!foundTransaction.isPresent()) {

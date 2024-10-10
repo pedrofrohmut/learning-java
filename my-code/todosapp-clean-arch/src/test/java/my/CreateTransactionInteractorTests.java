@@ -29,25 +29,26 @@ class CreateTransactionInteractorTests {
         assertEquals(1, transactions.size());
 
         final var getTransactionUseCase = new GetTransactionUseCase();
-        final var getTransactionInput = getTransactionUseCase.new Input(transactionCode);
+        final var getTransactionInput = getTransactionUseCase.new Input();
+        getTransactionInput.code = transactionCode;
         final var transaction = getTransactionUseCase.execute(getTransactionInput, transactions);
 
         // Check Transaction
         assertTrue(transaction.isPresent());
-        assertEquals(transactionCode, transaction.get().getCode());
-        assertEquals(new BigDecimal("1000"), transaction.get().getValue());
-        assertEquals("credit_card", transaction.get().getPaymentMethod());
-        assertEquals(12, transaction.get().getNumberOfInstallments());
+        assertEquals(transactionCode, transaction.get().code);
+        assertEquals(new BigDecimal("1000"), transaction.get().value);
+        assertEquals("credit_card", transaction.get().paymentMethod);
+        assertEquals(12, transaction.get().numberOfInstallments);
 
         // Check Transaction Installments
-        final var installments = transaction.get().getInstallments();
+        final var installments = transaction.get().installments;
         assertEquals(12, installments.size());
-        final var first = installments.stream().filter(x -> x.getNumber() == 1).findFirst();
+        final var first = installments.stream().filter(x -> x.number == 1).findFirst();
         assertTrue(first.isPresent());
-        assertEquals(new BigDecimal("83.33"), first.get().getValue());
-        final var last = installments.stream().filter(x -> x.getNumber() == 12).findFirst();
+        assertEquals(new BigDecimal("83.33"), first.get().value);
+        final var last = installments.stream().filter(x -> x.number == 12).findFirst();
         assertTrue(last.isPresent());
-        assertEquals(new BigDecimal("83.37"), last.get().getValue());
+        assertEquals(new BigDecimal("83.37"), last.get().value);
     }
 
 }
