@@ -28,6 +28,10 @@ public class Transaction {
 	    this(id, code, value, numberOfInstallments, paymentMethod, new ArrayList<>());
     }
 
+	public Transaction(String id, String code, double value, int numberOfInstallments, String paymentMethod) {
+	    this(id, code, new BigDecimal(value), numberOfInstallments, paymentMethod, new ArrayList<>());
+    }
+
     public void generateInstallments() throws Exception {
         BigDecimal installmentValue = null;
         BigDecimal roundingDiff = null;
