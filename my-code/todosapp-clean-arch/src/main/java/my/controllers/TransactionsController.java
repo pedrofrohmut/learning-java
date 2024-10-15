@@ -1,8 +1,5 @@
 package my.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,24 +8,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import my.application.input.CreateTransactionInput;
+import my.application.input.GetTransactionInput;
 import my.application.usecases.CreateTransactionUseCase;
 import my.application.usecases.GetTransactionUseCase;
-import my.entities.Transaction;
+import my.domain.repositories.ITransactionRepository;
+import my.infra.repositories.TransactionInMemoryRepository;
 import my.request.CreateTransactionForm;
 
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionsController {
 
-    private static List<Transaction> transactions = new ArrayList<>();
+    private final ITransactionRepository transactionRepository;
+
+    public TransactionsController() {
+        this.transactionRepository = new TransactionInMemoryRepository();
+    }
 
     @PostMapping("")
     public ResponseEntity<Object> createTransaction(@RequestBody CreateTransactionForm body) {
         try {
-            final var createTransactionUseCase = new CreateTransactionUseCase();
-            final var input = createTransactionUseCase.new Input(body.code, body.value, body.numberOfInstallments,
-                    body.paymentMethod);
-            createTransactionUseCase.execute(input, transactions);
+            final var input = new CreateTransactionInput(body.code, body.value, body.numberOfInstallments, body.paymentMethod);
+            final var createTransactionUseCase = new CreateTransactionUseCase(this.transactionRepository);
+            createTransactionUseCase.execute(input);
             return ResponseEntity.status(201).body(null);
         } catch (ArithmeticException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -39,10 +42,9 @@ public class TransactionsController {
 
     @GetMapping("/{code}")
     public ResponseEntity<Object> getTransaction(@PathVariable String code) {
-        final var getTransactionUseCase = new GetTransactionUseCase();
-        final var input = getTransactionUseCase.new Input();
-        input.code = code;
-        final var foundTransaction = getTransactionUseCase.execute(input, transactions);
+        final var input = new GetTransactionInput(code);
+        final var getTransactionUseCase = new GetTransactionUseCase(this.transactionRepository);
+        final var foundTransaction = getTransactionUseCase.execute(input);
 
         if (!foundTransaction.isPresent()) {
             return ResponseEntity.status(404).body("Transaction not found");

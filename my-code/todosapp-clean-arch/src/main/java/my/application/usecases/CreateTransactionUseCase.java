@@ -1,54 +1,26 @@
 package my.application.usecases;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
-import my.entities.Installment;
+import my.application.input.CreateTransactionInput;
+import my.domain.repositories.ITransactionRepository;
 import my.entities.Transaction;
 
 public class CreateTransactionUseCase {
 
-    public class Input {
-        public String code;
-        public double value;
-        public int numberOfInstallments;
-        public String paymentMethod;
+    private final ITransactionRepository transactionRepository;
 
-        public Input(String code, double value, int numberOfInstallments, String paymentMethod) {
-            this.code = code;
-            this.value = value;
-            this.numberOfInstallments = numberOfInstallments;
-            this.paymentMethod = paymentMethod;
-        }
+    public CreateTransactionUseCase(ITransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
+     
+    public void execute(CreateTransactionInput input) throws Exception {
+        final var total = new BigDecimal(input.value);
 
-    public void execute(Input form, List<Transaction> transactions) throws Exception {
-        final var total = new BigDecimal(form.value);
+        final var newTransaction = new Transaction(input.code, total, input.numberOfInstallments, input.paymentMethod);
+        newTransaction.generateInstallments();
 
-        final var newTransaction = new Transaction(form.code, total, form.numberOfInstallments, form.paymentMethod,
-                new ArrayList<Installment>());
-
-        BigDecimal installmentValue = null;
-        BigDecimal roundingDiff = null;
-        try {
-            final var N = new BigDecimal(form.numberOfInstallments);
-            installmentValue = total.divide(N, 2, RoundingMode.FLOOR);
-            final var temp = installmentValue.multiply(N);
-            roundingDiff = total.subtract(temp);
-        } catch (ArithmeticException e) {
-            throw new Exception("Error occured while try to calculate the Installments values. " + e.getMessage());
-
-        }
-
-        for (int i = 1; i <= form.numberOfInstallments; i++) {
-            final var thisValue = i == form.numberOfInstallments ? installmentValue.add(roundingDiff) : installmentValue;
-            final var newInstallment = new Installment(i, thisValue);
-            newTransaction.getInstallments().add(newInstallment);
-        }
-
-        transactions.add(newTransaction);
+        this.transactionRepository.save(newTransaction);
     }
 
 }
