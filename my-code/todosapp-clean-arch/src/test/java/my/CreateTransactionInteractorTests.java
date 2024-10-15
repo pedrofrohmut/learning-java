@@ -18,6 +18,7 @@ import my.application.input.CreateTransactionInput;
 import my.application.input.GetTransactionInput;
 import my.application.usecases.CreateTransactionUseCase;
 import my.application.usecases.GetTransactionUseCase;
+import my.infra.database.PostgresConnection;
 import my.infra.repositories.TransactionDatabaseRepository;
 import my.infra.repositories.TransactionInMemoryRepository;
 
@@ -61,15 +62,7 @@ class CreateTransactionInteractorTests {
 
 	@Test
     void ShouldCreateATransaction_Database() {
-    	Connection connection = null;
-    	try {
-    		final var props = new Properties();
-    		props.setProperty("user", "postgres");
-    		props.setProperty("password", "password");
-    		connection = DriverManager.getConnection("jdbc:postgresql://localhost:5105/", props);
-    	} catch (SQLException e) {
-    		System.err.println("Could not connect to postgres database. With message: " + e.getMessage());
-    	}
+    	final var connection = PostgresConnection.getConnection();
     	assertNotNull(connection);
 
 		final var transactionRepository = new TransactionDatabaseRepository(connection);
