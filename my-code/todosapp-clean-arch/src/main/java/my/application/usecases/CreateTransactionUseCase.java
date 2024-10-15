@@ -1,6 +1,7 @@
 package my.application.usecases;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import my.application.input.CreateTransactionInput;
 import my.domain.repositories.ITransactionRepository;
@@ -16,8 +17,9 @@ public class CreateTransactionUseCase {
      
     public void execute(CreateTransactionInput input) throws Exception {
         final var total = new BigDecimal(input.value);
+        final var id = UUID.randomUUID().toString();
 
-        final var newTransaction = new Transaction(input.code, total, input.numberOfInstallments, input.paymentMethod);
+        final var newTransaction = new Transaction(id, input.code, total, input.numberOfInstallments, input.paymentMethod);
         newTransaction.generateInstallments();
 
         this.transactionRepository.save(newTransaction);

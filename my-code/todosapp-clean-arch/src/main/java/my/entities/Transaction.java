@@ -4,16 +4,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Transaction {
 
+    private final String id;
     private final String code;
     private final BigDecimal value;
     private final int numberOfInstallments;
     private final String paymentMethod;
     private final List<Installment> installments;
 
-	public Transaction(String code, BigDecimal value, int numberOfInstallments, String paymentMethod, List<Installment> installments) {
+	public Transaction(String id, String code, BigDecimal value, int numberOfInstallments, String paymentMethod, List<Installment> installments) {
+        this.id = id;
         this.code = code;
         this.value = value;
         this.numberOfInstallments = numberOfInstallments;
@@ -21,8 +24,8 @@ public class Transaction {
         this.installments = installments;
     }
 
-	public Transaction(String code, BigDecimal value, int numberOfInstallments, String paymentMethod) {
-	    this(code, value, numberOfInstallments, paymentMethod, new ArrayList<>());
+	public Transaction(String id, String code, BigDecimal value, int numberOfInstallments, String paymentMethod) {
+	    this(id, code, value, numberOfInstallments, paymentMethod, new ArrayList<>());
     }
 
     public void generateInstallments() throws Exception {
@@ -39,10 +42,15 @@ public class Transaction {
         }
 
         for (int i = 1; i <= this.numberOfInstallments; i++) {
+            final var id = UUID.randomUUID().toString();
             final var thisValue = i == this.numberOfInstallments ? installmentValue.add(roundingDiff) : installmentValue;
-            final var newInstallment = new Installment(i, thisValue);
+            final var newInstallment = new Installment(id, i, thisValue);
             this.installments.add(newInstallment);
-        }    
+        }
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getCode() {
