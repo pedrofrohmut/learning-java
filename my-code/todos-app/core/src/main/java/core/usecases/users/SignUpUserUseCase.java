@@ -2,6 +2,9 @@ package core.usecases.users;
 
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
 import core.entities.UserEntity;
@@ -9,10 +12,12 @@ import core.exceptions.EmailAlreadyInUseException;
 import core.exceptions.InvalidUserException;
 import core.services.IPasswordService;
 
+@Service("signUpUserUseCase")
 public class SignUpUserUseCase {
     private final IUsersDataAccess usersDataAccess;
     private final IPasswordService passwordService;
 
+    @Autowired
     public SignUpUserUseCase(IUsersDataAccess usersDataAccess, IPasswordService passwordService) {
         this.usersDataAccess = usersDataAccess;
         this.passwordService = passwordService;

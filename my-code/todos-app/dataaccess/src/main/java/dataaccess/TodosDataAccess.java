@@ -7,17 +7,32 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import core.dataaccess.ITodosDataAccess;
 import core.dtos.NewTodoFormDto;
 import core.dtos.TodoDbDto;
 import core.dtos.UpdateTodoFormDto;
 
+@Service
 public class TodosDataAccess implements ITodosDataAccess {
 
+    @Autowired
+    @Qualifier("dataSource")
+    private final DataSource dataSource;
     private final Connection connection;
 
-    public TodosDataAccess(Connection connection) {
-        this.connection = connection;
+    public TodosDataAccess(DataSource dataSource) {
+        this.dataSource = dataSource;
+        try {
+            this.connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Problem with the database connection. With message: " + e.getMessage());
+        }
     }
 
     @Override

@@ -5,15 +5,31 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import core.dataaccess.IUsersDataAccess;
 import core.dtos.SignUpFormDto;
 import core.dtos.UserDbDto;
 
+@Service
 public class UsersDataAccess implements IUsersDataAccess {
+
+    @Autowired
+    @Qualifier("dataSource")
+    private final DataSource dataSource;
     private final Connection connection;
 
-    public UsersDataAccess(Connection connection) {
-        this.connection = connection;
+    public UsersDataAccess(DataSource dataSource) {
+        this.dataSource = dataSource;
+        try {
+            this.connection = this.dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Problem with the database connection. With message: " + e.getMessage());
+        }
     }
 
     @Override

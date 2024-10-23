@@ -2,8 +2,11 @@ package services;
 
 import de.mkammerer.argon2.Argon2Factory;
 
+import org.springframework.stereotype.Component;
+
 import core.services.IPasswordService;
 
+@Component
 public class PasswordService implements IPasswordService {
 
 	@Override

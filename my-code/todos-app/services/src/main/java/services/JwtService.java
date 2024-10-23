@@ -2,11 +2,14 @@ package services;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import core.services.IJwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+@Component
 public class JwtService implements IJwtService {
 
     @Override
