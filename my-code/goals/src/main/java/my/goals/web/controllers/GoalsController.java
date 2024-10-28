@@ -1,5 +1,8 @@
 package my.goals.web.controllers;
 
+import java.sql.Connection;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,19 +18,59 @@ import my.goals.web.dtos.CreateGoalForm;
 @RequestMapping("api/v1/goals")
 public class GoalsController {
 
+    // TODO: Make the abstract and concrete ConnectionManager
+    // TODO: Make the abstract and concrete useCaseFactory
+    // TODO: Make the 3 useCases
+    // TODO: Make the repository
+    // TODO: Make a web presenter that get the useCase Output and converts it to web response.
+    // TODO: If the presenter make no sense, then make just a webAdapter like in older projects
+
+    private final IUseCaseFactory useCaseFactory;
+
+    @Autowired
+    public GoalsController(IUseCaseFactory useCaseFactory) {
+        this.useCaseFactory = useCaseFactory;
+    }
 
     @PostMapping("create")
-    public void create(@RequestBody CreateGoalForm form) {
+    public ResponseEntity<Object> create(@Autowired IConnectionManager connectionManager,
+            @RequestBody CreateGoalForm form) {
+        Connection connection = null;
+        try {
+            connection = connectionManager.getConnection();
+            final var createGoal = this.useCaseFactory.getCreateGoal(connection);
+            final var response = createGoal.execute(form);
+            return ResponseEntity.status(response.status).body(response.body);
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @GetMapping("find")
-    public ResponseEntity<Object> findOne() {
-        return null;
+    public ResponseEntity<Object> findAll(@Autowired IConnectionManager connectionManager) {
+        Connection connection = null;
+        try {
+            connection = connectionManager.getConnection();
+            final var findAllGoals = this.useCaseFactory.getFindAllGoals(connection);
+            final var response = findAllGoals.execute();
+            return ResponseEntity.status(response.status).body(response.body);
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteOne(@PathVariable("id") String id) {
-        return null;
+    public ResponseEntity<Object> deleteOne(@Autowired IConnectionManager connectionManager,
+            @PathVariable("id") String id) {
+        Connection connection = null;
+        try {
+            connection = connectionManager.getConnection();
+            final var deleteGoal = this.useCaseFactory.getDeleteGoal(connection);
+            final var response = deleteGoal.execute(id);
+            return ResponseEntity.status(response.status).body(response.body);
+        } finally {
+            connectionManager.closeConnection(connection);
+        }
     }
 
 }
