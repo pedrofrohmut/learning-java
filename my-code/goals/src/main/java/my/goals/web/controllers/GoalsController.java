@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import my.goals.web.dtos.CreateGoalForm;
+import my.goals.application.IConnectionManager;
+import my.goals.application.IUseCaseFactory;
+import my.goals.application.adapters.GoalsWebAdapter;
 
 @RestController
 @RequestMapping("api/v1/goals")
@@ -39,7 +42,7 @@ public class GoalsController {
         try {
             connection = connectionManager.getConnection();
             final var createGoal = this.useCaseFactory.getCreateGoal(connection);
-            final var response = createGoal.execute(form);
+            final var response = GoalsWebAdapter.createGoal(createGoal, form);
             return ResponseEntity.status(response.status).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);
@@ -52,7 +55,7 @@ public class GoalsController {
         try {
             connection = connectionManager.getConnection();
             final var findAllGoals = this.useCaseFactory.getFindAllGoals(connection);
-            final var response = findAllGoals.execute();
+            final var response = GoalsWebAdapter.findAllGoals(findAllGoals);
             return ResponseEntity.status(response.status).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);
@@ -66,7 +69,7 @@ public class GoalsController {
         try {
             connection = connectionManager.getConnection();
             final var deleteGoal = this.useCaseFactory.getDeleteGoal(connection);
-            final var response = deleteGoal.execute(id);
+            final var response = GoalsWebAdapter.deleteGoal(deleteGoal, id);
             return ResponseEntity.status(response.status).body(response.body);
         } finally {
             connectionManager.closeConnection(connection);
