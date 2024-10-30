@@ -2,6 +2,7 @@ package my.goals.web.controllers;
 
 import java.sql.Connection;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,48 +30,61 @@ public class GoalsController {
     // TODO: If the presenter make no sense, then make just a webAdapter like in older projects
 
     private final IUseCaseFactory useCaseFactory;
+    private final ApplicationContext ctx;
 
     @Autowired
-    public GoalsController(IUseCaseFactory useCaseFactory) {
+    public GoalsController(IUseCaseFactory useCaseFactory, ApplicationContext ctx) {
         this.useCaseFactory = useCaseFactory;
+	this.ctx = ctx;
+    }
+
+    private IConnectionManager getConnectionManager() {
+	return (IConnectionManager) this.ctx.getBean("PostgresConnectionManager");
     }
 
     @PostMapping("create")
-    public ResponseEntity<Object> create(@Autowired IConnectionManager connectionManager,
-            @RequestBody CreateGoalForm form) {
+    public ResponseEntity<Object> create(@RequestBody CreateGoalForm form) {
+	final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var createGoal = this.useCaseFactory.getCreateGoal(connection);
             final var response = GoalsWebAdapter.createGoal(createGoal, form);
             return ResponseEntity.status(response.status).body(response.body);
-        } finally {
-            connectionManager.closeConnection(connection);
+	} catch (Exception e) {
+	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
+	} finally {
+	    connectionManager.closeConnection(connection);
         }
     }
 
     @GetMapping("find")
-    public ResponseEntity<Object> findAll(@Autowired IConnectionManager connectionManager) {
+    public ResponseEntity<Object> findAll() {
+	final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var findAllGoals = this.useCaseFactory.getFindAllGoals(connection);
             final var response = GoalsWebAdapter.findAllGoals(findAllGoals);
             return ResponseEntity.status(response.status).body(response.body);
+	} catch (Exception e) {
+	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
         } finally {
             connectionManager.closeConnection(connection);
         }
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteOne(@Autowired IConnectionManager connectionManager,
-            @PathVariable("id") String id) {
+    public ResponseEntity<Object> deleteOne(@PathVariable("id") String id) {
+	final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var deleteGoal = this.useCaseFactory.getDeleteGoal(connection);
             final var response = GoalsWebAdapter.deleteGoal(deleteGoal, id);
             return ResponseEntity.status(response.status).body(response.body);
+	} catch (Exception e) {
+	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
         } finally {
             connectionManager.closeConnection(connection);
         }

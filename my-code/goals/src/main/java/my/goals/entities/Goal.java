@@ -12,6 +12,10 @@ public class Goal {
 	this.isDone = isDone;
     }
 
+    public Goal(String description, boolean isDone) {
+	this(null, description, isDone);
+    }
+
     public String getId() {
 	return id;
     }
