@@ -23,7 +23,7 @@ public class MainUseCaseFactory implements IUseCaseFactory {
     }
 
     private IGoalsDataAccess getGoalsDataAccess(Connection connection) {
-	final var goalsDataAccess = (PostgresGoalsDataAccess) this.context.getBean("postgresGoalsDataAccess");
+	final var goalsDataAccess = (PostgresGoalsDataAccess) this.context.getBean("PostgresGoalsDataAccess");
 	goalsDataAccess.setConnection(connection);
 	return goalsDataAccess;
     }

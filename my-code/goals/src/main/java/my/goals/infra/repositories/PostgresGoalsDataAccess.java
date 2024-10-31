@@ -5,9 +5,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import my.goals.application.dataaccess.IGoalsDataAccess;
 import my.goals.entities.Goal;
 
+@Component("PostgresGoalsDataAccess")
 public class PostgresGoalsDataAccess implements IGoalsDataAccess {
 
     private Connection connection;

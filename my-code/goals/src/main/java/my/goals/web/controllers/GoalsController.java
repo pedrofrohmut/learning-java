@@ -38,6 +38,8 @@ public class GoalsController {
 	this.ctx = ctx;
     }
 
+    // Works as an optional dependency not to be used always
+    // That is why is not passed in the constructor as the other dependencies
     private IConnectionManager getConnectionManager() {
 	return (IConnectionManager) this.ctx.getBean("PostgresConnectionManager");
     }
