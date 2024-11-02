@@ -18,9 +18,9 @@ public class CreateGoal implements ICreateGoal {
     }
 
     @Override
-    public void execute(CreateGoalForm form) {
-	final var goal = new Goal(UUID.randomUUID().toString(), form.description, form.isDone);
-	this.goalsDataAccess.create(goal);
+    public void execute(CreateGoalForm form) throws Exception {
+	final var goal = new Goal(form);
+	Goal.createGoal(goal, this.goalsDataAccess);
     }
 
 }

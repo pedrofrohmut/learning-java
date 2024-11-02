@@ -22,10 +22,6 @@ import my.goals.application.adapters.GoalsWebAdapter;
 @RequestMapping("api/v1/goals")
 public class GoalsController {
 
-    // TODO: Make the abstract and concrete ConnectionManager
-    // TODO: Make the abstract and concrete useCaseFactory
-    // TODO: Make the 3 useCases
-    // TODO: Make the repository
     // TODO: Make a web presenter that get the useCase Output and converts it to web response.
     // TODO: If the presenter make no sense, then make just a webAdapter like in older projects
 

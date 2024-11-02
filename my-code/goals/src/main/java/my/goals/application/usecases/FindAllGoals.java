@@ -17,8 +17,8 @@ public class FindAllGoals implements IFindAllGoals {
     }
 
     @Override
-    public List<Goal> execute() {
-	return this.goalsDataAccess.findAll();
+    public List<Goal> execute() throws Exception {
+	return Goal.findAllGoals(this.goalsDataAccess);
     }
 
 }

@@ -37,7 +37,7 @@ public class MainUseCaseFactory implements IUseCaseFactory {
     @Override
     public IFindAllGoals getFindAllGoals(Connection connection) {
 	final var goalsDataAccess = getGoalsDataAccess(connection);
-	return (IFindAllGoals) this.context.getBean("FindAllGoal", goalsDataAccess);
+	return (IFindAllGoals) this.context.getBean("FindAllGoals", goalsDataAccess);
     }
 
     @Override

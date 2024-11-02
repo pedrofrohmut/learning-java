@@ -5,5 +5,5 @@ import java.util.List;
 import my.goals.entities.Goal;
 
 public interface IFindAllGoals {
-    List<Goal> execute();
+    List<Goal> execute() throws Exception;
 }

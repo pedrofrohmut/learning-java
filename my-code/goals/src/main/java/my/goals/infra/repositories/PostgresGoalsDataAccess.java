@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -22,13 +23,13 @@ public class PostgresGoalsDataAccess implements IGoalsDataAccess {
     }
 
     @Override
-    public void create(Goal goal) {
+    public boolean create(Goal goal) {
 	final var sql = "INSERT INTO goals (id, description, is_done) VALUES (?, ?, ?)";
 	try (final var stm = this.connection.prepareStatement(sql)) {
 	    stm.setString(1, goal.getId());
 	    stm.setString(2, goal.getDescription());
 	    stm.setBoolean(3, goal.getIsDone());
-	    stm.execute();
+	    return stm.execute();
 	} catch (SQLException e) {
 	    throw new RuntimeException("Error to create a goal. With message: " + e.getMessage());
 	}
@@ -52,13 +53,30 @@ public class PostgresGoalsDataAccess implements IGoalsDataAccess {
     }
 
     @Override
-    public void delete(String id) {
+    public int delete(String id) {
 	final var sql = "DELETE FROM goals WHERE id = ?";
 	try (final var stm = this.connection.prepareStatement(sql)) {
-	    stm.setString(1, "id");
-	    stm.execute();
+	    stm.setString(1, id);
+	    return stm.executeUpdate();
 	} catch (SQLException e) {
 	    throw new RuntimeException("Error to delete goal. With message: " + e.getMessage());
+	}
+    }
+
+    @Override
+    public Optional<Goal> findById(String id) {
+	final var sql = "SELECT description, is_done FROM goals WHERE id = ?";
+	try (final var stm = this.connection.prepareStatement(sql)) {
+	    stm.setString(1, id);
+	    try (final var rs = stm.executeQuery()) {
+		if (!rs.next()) {
+		    return Optional.empty();
+		}
+		final var goal = new Goal(id, rs.getString("description"), rs.getBoolean("is_done"));
+		return Optional.of(goal);
+	    }
+	} catch (SQLException e) {
+	    throw new RuntimeException("Error to find goal by id. With message: " + e.getMessage());
 	}
     }
 
