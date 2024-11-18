@@ -13,12 +13,12 @@ public class FindAllGoals implements IFindAllGoals {
     private final IGoalsDataAccess goalsDataAccess;
 
     public FindAllGoals(IGoalsDataAccess goalsDataAccess) {
-	this.goalsDataAccess = goalsDataAccess;
+        this.goalsDataAccess = goalsDataAccess;
     }
 
     @Override
     public List<Goal> execute() throws Exception {
-	return Goal.findAllGoals(this.goalsDataAccess);
+        return Goal.findAllGoals(this.goalsDataAccess);
     }
 
 }

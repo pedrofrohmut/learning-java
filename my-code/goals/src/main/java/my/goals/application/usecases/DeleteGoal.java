@@ -11,13 +11,13 @@ public class DeleteGoal implements IDeleteGoal {
     private final IGoalsDataAccess goalsDataAccess;
 
     public DeleteGoal(IGoalsDataAccess goalsDataAccess) {
-	this.goalsDataAccess = goalsDataAccess;
+        this.goalsDataAccess = goalsDataAccess;
     }
 
     @Override
     public void execute(String id) throws Exception {
-	Goal.existsGoal(id, this.goalsDataAccess);
-	Goal.deleteGoal(id, this.goalsDataAccess);
+        Goal.existsGoal(id, this.goalsDataAccess);
+        Goal.deleteGoal(id, this.goalsDataAccess);
     }
 
 }

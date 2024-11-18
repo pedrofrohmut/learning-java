@@ -22,51 +22,48 @@ import my.goals.application.adapters.GoalsWebAdapter;
 @RequestMapping("api/v1/goals")
 public class GoalsController {
 
-    // TODO: Make a web presenter that get the useCase Output and converts it to web response.
-    // TODO: If the presenter make no sense, then make just a webAdapter like in older projects
-
     private final IUseCaseFactory useCaseFactory;
     private final ApplicationContext ctx;
 
     @Autowired
     public GoalsController(IUseCaseFactory useCaseFactory, ApplicationContext ctx) {
         this.useCaseFactory = useCaseFactory;
-	this.ctx = ctx;
+        this.ctx = ctx;
     }
 
     // Works as an optional dependency not to be used always
     // That is why is not passed in the constructor as the other dependencies
     private IConnectionManager getConnectionManager() {
-	return (IConnectionManager) this.ctx.getBean("PostgresConnectionManager");
+        return (IConnectionManager) this.ctx.getBean("PostgresConnectionManager");
     }
 
     @PostMapping("create")
     public ResponseEntity<Object> create(@RequestBody CreateGoalForm form) {
-	final var connectionManager = getConnectionManager();
+        final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var createGoal = this.useCaseFactory.getCreateGoal(connection);
             final var response = GoalsWebAdapter.createGoal(createGoal, form);
             return ResponseEntity.status(response.status).body(response.body);
-	} catch (Exception e) {
-	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
-	} finally {
-	    connectionManager.closeConnection(connection);
+        } catch (Exception e) {
+            throw new RuntimeException("ERROR: with message: " + e.getMessage());
+        } finally {
+            connectionManager.closeConnection(connection);
         }
     }
 
     @GetMapping("find")
     public ResponseEntity<Object> findAll() {
-	final var connectionManager = getConnectionManager();
+        final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var findAllGoals = this.useCaseFactory.getFindAllGoals(connection);
             final var response = GoalsWebAdapter.findAllGoals(findAllGoals);
             return ResponseEntity.status(response.status).body(response.body);
-	} catch (Exception e) {
-	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("ERROR: with message: " + e.getMessage());
         } finally {
             connectionManager.closeConnection(connection);
         }
@@ -74,15 +71,15 @@ public class GoalsController {
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Object> deleteOne(@PathVariable("id") String id) {
-	final var connectionManager = getConnectionManager();
+        final var connectionManager = getConnectionManager();
         Connection connection = null;
         try {
             connection = connectionManager.getConnection();
             final var deleteGoal = this.useCaseFactory.getDeleteGoal(connection);
             final var response = GoalsWebAdapter.deleteGoal(deleteGoal, id);
             return ResponseEntity.status(response.status).body(response.body);
-	} catch (Exception e) {
-	    throw new RuntimeException("ERROR: with message: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("ERROR: with message: " + e.getMessage());
         } finally {
             connectionManager.closeConnection(connection);
         }

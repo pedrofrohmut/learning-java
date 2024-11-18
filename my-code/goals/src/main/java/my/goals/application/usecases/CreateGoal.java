@@ -14,13 +14,13 @@ public class CreateGoal implements ICreateGoal {
     private final IGoalsDataAccess goalsDataAccess;
 
     public CreateGoal(IGoalsDataAccess goalsDataAccess) {
-	this.goalsDataAccess = goalsDataAccess;
+        this.goalsDataAccess = goalsDataAccess;
     }
 
     @Override
     public void execute(CreateGoalForm form) throws Exception {
-	final var goal = new Goal(form);
-	Goal.createGoal(goal, this.goalsDataAccess);
+        final var goal = new Goal(form);
+        Goal.createGoal(goal, this.goalsDataAccess);
     }
 
 }

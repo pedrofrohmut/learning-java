@@ -19,31 +19,31 @@ public class MainUseCaseFactory implements IUseCaseFactory {
 
     @Autowired
     public MainUseCaseFactory(ApplicationContext context) {
-	this.context = context;
+        this.context = context;
     }
 
     private IGoalsDataAccess getGoalsDataAccess(Connection connection) {
-	final var goalsDataAccess = (PostgresGoalsDataAccess) this.context.getBean("PostgresGoalsDataAccess");
-	goalsDataAccess.setConnection(connection);
-	return goalsDataAccess;
+        final var goalsDataAccess = (PostgresGoalsDataAccess) this.context.getBean("PostgresGoalsDataAccess");
+        goalsDataAccess.setConnection(connection);
+        return goalsDataAccess;
     }
 
     @Override
     public ICreateGoal getCreateGoal(Connection connection) {
-	final var goalsDataAccess = getGoalsDataAccess(connection);
-	return (ICreateGoal) this.context.getBean("CreateGoal", goalsDataAccess);
+        final var goalsDataAccess = getGoalsDataAccess(connection);
+        return (ICreateGoal) this.context.getBean("CreateGoal", goalsDataAccess);
     }
 
     @Override
     public IFindAllGoals getFindAllGoals(Connection connection) {
-	final var goalsDataAccess = getGoalsDataAccess(connection);
-	return (IFindAllGoals) this.context.getBean("FindAllGoals", goalsDataAccess);
+        final var goalsDataAccess = getGoalsDataAccess(connection);
+        return (IFindAllGoals) this.context.getBean("FindAllGoals", goalsDataAccess);
     }
 
     @Override
     public IDeleteGoal getDeleteGoal(Connection connection) {
-	final var goalsDataAccess = getGoalsDataAccess(connection);
-	return (IDeleteGoal) this.context.getBean("DeleteGoal", goalsDataAccess);
+        final var goalsDataAccess = getGoalsDataAccess(connection);
+        return (IDeleteGoal) this.context.getBean("DeleteGoal", goalsDataAccess);
     }
 
 }

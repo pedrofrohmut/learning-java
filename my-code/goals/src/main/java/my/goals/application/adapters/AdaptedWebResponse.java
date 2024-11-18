@@ -6,16 +6,16 @@ public class AdaptedWebResponse {
     public Object body;
 
     private AdaptedWebResponse(int status, Object body) {
-	this.status = status;
-	this.body = body;
+        this.status = status;
+        this.body = body;
     }
 
     public static AdaptedWebResponse of(int status) {
-	return new AdaptedWebResponse(status, null);
+        return new AdaptedWebResponse(status, null);
     }
 
     public static AdaptedWebResponse of(int status, Object body) {
-	return new AdaptedWebResponse(status, body);
+        return new AdaptedWebResponse(status, body);
     }
 
 }
